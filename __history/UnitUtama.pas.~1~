@@ -1,0 +1,32 @@
+unit UnitUtama;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, ComCtrls, ExtDlgs, StdCtrls, ExtCtrls;
+
+type
+  TFormUtama = class(TForm)
+    PanelAtas: TPanel;
+    ButtonAmbilCitra: TButton;
+    ButtonBeriDerau: TButton;
+    RadioButtonGaussian: TRadioButton;
+    RadioButtonSaltPepper: TRadioButton;
+    EditDerau: TEdit;
+    OpenPictureDialog1: TOpenPictureDialog;
+    StatusBar: TStatusBar;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FormUtama: TFormUtama;
+
+implementation
+
+{$R *.dfm}
+
+end.

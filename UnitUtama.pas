@@ -1,0 +1,257 @@
+unit UnitUtama;
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, ExtDlgs, StdCtrls, ComCtrls, ExtCtrls, Math, Spin;
+
+type
+  TFormUtama = class(TForm)
+  PanelAtas: TPanel;
+  StatusBar: TStatusBar;
+  ButtonAmbilCitra: TButton;
+  OpenPictureDialog: TOpenPictureDialog;
+  RadioButtonGaussian: TRadioButton;
+  RadioButtonSaltPepper: TRadioButton;
+    TrackBar: TTrackBar;
+    ButtonBeriDerau: TButton;
+
+procedure ButtonAmbilCitraClick(Sender: TObject);
+procedure Olah;
+procedure ButtonBeriDerauClick(Sender: TObject);
+
+private
+{ Private declarations }
+public
+{ Public declarations }
+end;
+
+var
+  FormUtama: TFormUtama;
+
+implementation
+uses UnitCitra;
+
+var
+  FormHasil: TFormCitra;
+{$R *.dfm}
+
+procedure TFormUtama.Olah;
+var
+  x, y, w, h: integer;
+  PC, PH: PByteArray;
+  Ki, Ri, Gi, Bi, Ko, Ro, Go, Bo: array of array of byte;
+  Derau, temp: real;
+begin
+  Randomize;
+  Derau := TrackBar.Position/10;
+  w := FormCitra.Image.Picture.Width;
+  h := FormCitra.Image.Picture.Height;
+  if (FormCitra.Image.Picture.Bitmap.PixelFormat = pf8bit) then
+  begin
+    SetLength(Ki, w, h);
+    SetLength(Ko, w, h);
+    for y := 0 to h-1 do
+    begin
+    PC := FormCitra.Image.Picture.Bitmap.ScanLine[y];
+    for x := 0 to w-1 do
+    Ki[x, y] := PC[x];
+    end;
+    for x := 0 to w-1 do
+    for y := 0 to h-1 do
+    begin
+    if (RadioButtonGaussian.Checked) then
+    begin
+    temp := Ki[x, y]+RandG(0, Derau*255);
+    if (temp < 0) then
+    Ko[x, y] := 0
+    else if (temp > 255) then
+    Ko[x, y] := 255
+    else
+    Ko[x, y] := Round(temp);
+    end;
+    if (RadioButtonSaltPepper.Checked) then
+    begin
+    temp := Random;
+    if (temp < Derau/2) then
+    Ko[x, y] := 0
+    else if (temp > 1-(Derau/2)) then
+    Ko[x, y] := 255
+    else
+    Ko[x, y] := Ki[x, y];
+    end;
+    end;
+    for y := 0 to h-1 do
+    begin
+    PH := FormHasil.Image.Picture.Bitmap.ScanLine[y];
+    for x := 0 to w-1 do
+    PH[x] := Ko[x, y];
+    end;
+    Ki := nil;
+    Ko := nil;
+    end;
+    if (FormCitra.Image.Picture.Bitmap.PixelFormat = pf24bit)
+    then
+    begin
+    SetLength(Ri, w, h);
+    SetLength(Gi, w, h);
+    SetLength(Bi, w, h);
+    SetLength(Ro, w, h);
+    SetLength(Go, w, h);
+    SetLength(Bo, w, h);
+    for y := 0 to h-1 do
+    begin
+    PC := FormCitra.Image.Picture.Bitmap.ScanLine[y];
+    for x := 0 to w-1 do
+    begin
+    Bi[x, y] := PC[3*x];
+    Gi[x, y] := PC[3*x+1];
+    Ri[x, y] := PC[3*x+2];
+    end;
+    end;
+    for x := 0 to w-1 do
+    for y := 0 to h-1 do
+    begin
+    if (RadioButtonGaussian.Checked) then
+    begin
+    temp := Ri[x, y]+RandG(0, Derau*255);
+    if (temp < 0) then
+    Ro[x, y] := 0
+    else if (temp > 255) then
+    Ro[x, y] := 255
+    else
+    Ro[x, y] := Round(temp);
+    end;
+    if (RadioButtonSaltPepper.Checked) then
+    begin
+    temp := Random;
+    if (temp < Derau/2) then
+    Ro[x, y] := 0
+    else if (temp > 1-(Derau/2)) then
+    Ro[x, y] := 255
+    else
+    Ro[x, y] := Ri[x, y];
+    end;
+    if (RadioButtonGaussian.Checked) then
+    begin
+    temp := Gi[x, y]+RandG(0, Derau*255);
+    if (temp < 0) then
+    Go[x, y] := 0
+    else if (temp > 255) then
+    Go[x, y] := 255
+    else
+    Go[x, y] := Round(temp);
+    end;
+    if (RadioButtonSaltPepper.Checked) then
+    begin
+    temp := Random;
+    if (temp < Derau/2) then
+    Go[x, y] := 0
+    else if (temp > 1-(Derau/2)) then
+    Go[x, y] := 255
+    else
+    Go[x, y] := Gi[x, y];
+    end;
+    if (RadioButtonGaussian.Checked) then
+    begin
+    temp := Bi[x, y]+RandG(0, Derau*255);
+    if (temp < 0) then
+    Bo[x, y] := 0
+    else if (temp > 255) then
+    Bo[x, y] := 255
+    else
+    Bo[x, y] := Round(temp);
+    end;
+    if (RadioButtonSaltPepper.Checked) then
+    begin
+    temp := Random;
+    if (temp < Derau/2) then
+    Bo[x, y] := 0
+    else if (temp > 1-(Derau/2)) then
+    Bo[x, y] := 255
+    else
+    Bo[x, y] := Bi[x, y];
+    end;
+    end;
+    for y := 0 to h-1 do
+    begin
+    PH := FormHasil.Image.Picture.Bitmap.ScanLine[y];
+    for x := 0 to w-1 do
+    begin
+    PH[3*x] := Bo[x, y];
+    PH[3*x+1] := Go[x, y];
+    PH[3*x+2] := Ro[x, y];
+    end;
+  end;
+  Ri := nil;
+  Gi := nil;
+  Bi := nil;
+  Ro := nil;
+  Go := nil;
+  Bo := nil;
+  end;
+end;
+
+procedure TFormUtama.ButtonBeriDerauClick(Sender: TObject);
+begin
+  if (FormCitra = nil) then
+  begin
+    ShowMessage('Ambil dulu citra yang akan diolah');
+    exit;
+  end;
+  if (FormHasil = nil) then
+    Application.CreateForm(TFormCitra, FormHasil);
+  FormHasil.Caption := 'Citra Hasil';
+  FormHasil.Image.Picture := FormCitra.Image.Picture;
+  FormHasil.Top := FormCitra.Top;
+  FormHasil.Left := FormCitra.Left+FormCitra.Width;
+  FormHasil.ClientHeight := FormHasil.Image.Picture.Height;
+  FormHasil.ClientWidth := FormHasil.Image.Picture.Width;
+  FormHasil.ClientHeight := FormHasil.Image.Picture.Height;
+  Olah;
+end;
+
+procedure TFormUtama.ButtonAmbilCitraClick(Sender: TObject);
+var
+fc: string;
+b1: TBitmap;
+p1: TPicture;
+begin
+if (OpenPictureDialog.Execute) then
+begin
+if (FormCitra = nil) then
+Application.CreateForm(TFormCitra, FormCitra);
+if (LowerCase(ExtractFileExt(OpenPictureDialog.FileName))
+= '.bmp') then
+FormCitra.Image.Picture.LoadFromFile(
+OpenPictureDialog.FileName)
+else
+begin
+p1 := TPicture.Create;
+p1.LoadFromFile(OpenPictureDialog.FileName);
+b1 := TBitmap.Create;
+b1.Height := p1.Graphic.Height;
+b1.Width := p1.Graphic.Width;
+b1.Canvas.Draw(0, 0, p1.Graphic);
+b1.PixelFormat := pf24bit;
+FormCitra.Image.Picture.Bitmap := b1;
+p1.Free;
+end;
+FormCitra.ClientHeight :=
+FormCitra.Image.Picture.Height;
+FormCitra.ClientWidth :=
+FormCitra.Image.Picture.Width;
+FormCitra.ClientHeight :=
+FormCitra.Image.Picture.Height;
+case (FormCitra.Image.Picture.Bitmap.PixelFormat) of
+pf1bit : fc := 'biner';
+pf8bit : fc := 'keabuan';
+pf24bit : fc := 'true color';
+end;
+StatusBar.SimpleText := OpenPictureDialog.FileName+' ('+
+IntToStr((FormCitra.Image.Picture.Height))+'x'+
+IntToStr((FormCitra.Image.Picture.Width))+', '+
+fc+')';
+end;
+end;
+end.

@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2017/04/25 09:55:51.820.pas,C:\Users\L405\Documents\RAD Studio\Projects\Unit2.pas=D:\60200114052\Derau\UnitCitra.pas</Transaction>
+    <Transaction>2017/04/25 09:55:51.820.dfm,C:\Users\L405\Documents\RAD Studio\Projects\Unit2.dfm=D:\60200114052\Derau\UnitCitra.dfm</Transaction>
+    <Transaction>2017/04/25 09:55:58.888.pas,C:\Users\L405\Documents\RAD Studio\Projects\Unit1.pas=D:\60200114052\Derau\UnitUtama.pas</Transaction>
+    <Transaction>2017/04/25 09:55:58.888.dfm,C:\Users\L405\Documents\RAD Studio\Projects\Unit1.dfm=D:\60200114052\Derau\UnitUtama.dfm</Transaction>
+    <Transaction>2017/04/25 09:56:14.398.dproj,C:\Users\L405\Documents\RAD Studio\Projects\Project1.dproj=D:\60200114052\Derau\PCD_02_Derau_Citra.dproj</Transaction>
+  </Transactions>
+</BorlandProject>
